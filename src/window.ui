@@ -27,6 +27,7 @@
 
         <child>
           <object class="AdwClamp">
+            <property name="maximum-size">450</property>
             <property name="valign">center</property>
             <child>
               <object class="RouletteSpinningRoulette" id="roulette">

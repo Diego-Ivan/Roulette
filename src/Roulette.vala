@@ -36,20 +36,15 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
         out int natural_baseline
     ) {
         debug (@"Measuring for $orientation");
-        int target_size = for_size;
-        if (target_size < MIN_SIZE && valign != CENTER) {
-            min = natural = MIN_SIZE;
-        } else {
-            min = MIN_SIZE;
-            natural = target_size;
-        }
+        min = MIN_SIZE;
+        natural = for_size < MIN_SIZE ? MIN_SIZE : for_size;
+
         min_baseline = natural_baseline = -1;
         debug (@"min: $min, natural: $natural");
     }
 
     public override void snapshot (Gtk.Snapshot snapshot) {
         debug ("Taking Snapshot...");
-
         var rect = Graphene.Rect () {
             origin = {0, 0},
             size = { get_height(), get_height () }
@@ -60,7 +55,7 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
         };
 
         snapshot.append_color ({0, 1, 0, 1}, rect);
-        snapshot.append_color ( {1, 0, 0, 1}, second_rect);
+        snapshot.append_color ( {1, (float) rotation, 0, 1}, second_rect);
 
         var snap = new Gtk.Snapshot ();
         var third_rect = Graphene.Rect () {
