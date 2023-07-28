@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=roulette
+Exec=roulette
+Icon=io.github.diegoivan.roulette
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true

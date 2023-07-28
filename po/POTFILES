@@ -1,0 +1,6 @@
+data/io.github.diegoivan.roulette.desktop.in
+data/io.github.diegoivan.roulette.appdata.xml.in
+data/io.github.diegoivan.roulette.gschema.xml
+src/main.vala
+src/window.vala
+src/window.ui

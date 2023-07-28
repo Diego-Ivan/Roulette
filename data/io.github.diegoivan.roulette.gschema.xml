@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="roulette">
+	<schema id="io.github.diegoivan.roulette" path="/io/github/diegoivan/roulette/">
+	</schema>
+</schemalist>
