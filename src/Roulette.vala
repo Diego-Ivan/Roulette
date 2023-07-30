@@ -20,7 +20,9 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
             rotation = value;
             this.queue_draw ();
         });
-        var animation = new Adw.TimedAnimation (this, 0, 360, 1000, callback_target);
+        var animation = new Adw.TimedAnimation (this, 0, 360 * 10, 5000, callback_target) {
+            easing = EASE_IN_OUT_CUBIC
+        };
         animation.play ();
         animation.done.connect (() => {
             rotation = 0;
@@ -46,7 +48,7 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
     public override void snapshot (Gtk.Snapshot snapshot) {
         debug ("Taking snapshot");
         var bounds = Graphene.Rect () {
-            origin = { 0, 0 },
+            origin = { 0,0 },
             size = { get_width (), get_height () }
         };
 
@@ -54,22 +56,32 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
         var context = cairo_node.get_draw_context ();
         draw_triangle (context, bounds);
 
-        snapshot.append_node (cairo_node);
+        var transform = new Gsk.Transform ();
+        transform = transform.rotate (-(float) rotation);
+
+        var translation = new Gsk.Transform ();
+        translation = translation.translate ( {get_height () / 2, get_height () / 2} );
+
+        transform = translation.transform (transform);
+
+        var transform_node = new Gsk.TransformNode (cairo_node, transform);
+
+        snapshot.append_node (transform_node);
     }
 
     private void draw_triangle (Cairo.Context ctx, Graphene.Rect bounds) {
         Graphene.Size size = bounds.size;
-        double pen_width = size.width * 0.03;
-        double x = size.width / 2;
-        double y = size.height / 2;
-        double radius = (size.width / 2) - pen_width / 2;
 
-        double angle1 = 45 * Math.PI / 180;
+        double x = bounds.origin.x;
+        double y = bounds.origin.y;
 
-        ctx.set_line_width (pen_width);
+        double radius = size.width * 0.5 * 0.95;
+        double angle1 = 23 * Math.PI / 180;
+
+        ctx.set_line_width (1);
         ctx.set_source_rgba (1, 0, 0, 1);
         ctx.line_to (x, y);
-        ctx.arc (x, y, radius, 0, angle1);
+        ctx.arc_negative (x, y, radius, angle1, 0);
         ctx.line_to (x,y);
         ctx.fill ();
         ctx.stroke ();
