@@ -44,37 +44,35 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
     }
 
     public override void snapshot (Gtk.Snapshot snapshot) {
-        debug ("Taking Snapshot...");
-        var rect = Graphene.Rect () {
-            origin = { get_height () / 3, get_height () / 3 },
-            size = { get_height () / 6, get_height () / 6 }
+        debug ("Taking snapshot");
+        var bounds = Graphene.Rect () {
+            origin = { 0, 0 },
+            size = { get_width (), get_height () }
         };
 
-        var rotated_snap = new Gtk.Snapshot ();
+        var cairo_node = new Gsk.CairoNode (bounds);
+        var context = cairo_node.get_draw_context ();
+        draw_triangle (context, bounds);
 
-        var color = Gdk.RGBA () {
-            red = 1, green = 0, blue = 0, alpha = 1
-        };
-        rotated_snap.append_color (color, rect);
-
-        var node = rotated_snap.free_to_node ();
-
-        var transform = new Gsk.Transform ();
-        transform = transform.rotate ((float) rotation);
-        var transformed_node = new Gsk.TransformNode (node, transform);
-
-        snapshot.append_node (transformed_node);
+        snapshot.append_node (cairo_node);
     }
 
-    private Graphene.Matrix compute_rotation_matrix (double angle_degrees) {
-        double radians = angle_degrees * Math.PI * 1/180;
-        var matrix = Graphene.Matrix ();
-        matrix = matrix.init_from_2d (
-            Math.cos (radians), -Math.sin (radians),
-            Math.sin (radians), Math.cos (radians),
-            0, 0
-        );
-        return matrix;
+    private void draw_triangle (Cairo.Context ctx, Graphene.Rect bounds) {
+        Graphene.Size size = bounds.size;
+        double pen_width = size.width * 0.03;
+        double x = size.width / 2;
+        double y = size.height / 2;
+        double radius = (size.width / 2) - pen_width / 2;
+
+        double angle1 = 45 * Math.PI / 180;
+
+        ctx.set_line_width (pen_width);
+        ctx.set_source_rgba (1, 0, 0, 1);
+        ctx.line_to (x, y);
+        ctx.arc (x, y, radius, 0, angle1);
+        ctx.line_to (x,y);
+        ctx.fill ();
+        ctx.stroke ();
     }
 
     public override Gtk.SizeRequestMode get_request_mode () {
