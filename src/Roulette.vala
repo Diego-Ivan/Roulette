@@ -52,39 +52,18 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
             size = { get_width (), get_height () }
         };
 
-        var cairo_node = new Gsk.CairoNode (bounds);
-        var context = cairo_node.get_draw_context ();
-        draw_triangle (context, bounds);
+        var arc_node = new ArcNode (45) {
+            bounds = bounds,
+            color = { 1, 0.5f, 1, 1 }
+        };
 
-        var transform = new Gsk.Transform ();
-        transform = transform.rotate (-(float) rotation);
+        var transform_rotation = new Gsk.Transform ();
+        transform_rotation = transform_rotation.translate ({get_width () /2, get_height () / 2});
+        transform_rotation = transform_rotation.scale (0.95f, 0.95f);
+        transform_rotation = transform_rotation.rotate ((float) rotation);
 
-        var translation = new Gsk.Transform ();
-        translation = translation.translate ( {get_height () / 2, get_height () / 2} );
-
-        transform = translation.transform (transform);
-
-        var transform_node = new Gsk.TransformNode (cairo_node, transform);
-
+        var transform_node = new Gsk.TransformNode (arc_node.render (), transform_rotation);
         snapshot.append_node (transform_node);
-    }
-
-    private void draw_triangle (Cairo.Context ctx, Graphene.Rect bounds) {
-        Graphene.Size size = bounds.size;
-
-        double x = bounds.origin.x;
-        double y = bounds.origin.y;
-
-        double radius = size.width * 0.5 * 0.95;
-        double angle1 = 23 * Math.PI / 180;
-
-        ctx.set_line_width (1);
-        ctx.set_source_rgba (1, 0, 0, 1);
-        ctx.line_to (x, y);
-        ctx.arc_negative (x, y, radius, angle1, 0);
-        ctx.line_to (x,y);
-        ctx.fill ();
-        ctx.stroke ();
     }
 
     public override Gtk.SizeRequestMode get_request_mode () {
