@@ -3,6 +3,8 @@ roulette_sources = [
   'application.vala',
   'window.vala',
   'Roulette.vala',
+  'ValidableNode.vala',
+  'ArcNode.vala',
 ]
 
 cc = meson.get_compiler('c')
