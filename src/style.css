@@ -1,3 +1,4 @@
 roulette {
-  /* background-color: red; */
+	background-color: @view_fg_color;
+	border-radius: 100%;
 }

@@ -32,5 +32,21 @@ namespace Roulette {
         private void on_animation_button_clicked () {
             roulette.run_animation ();
         }
+
+        [GtkCallback]
+        private async void on_save_node_button_clicked () {
+            var snapshot = new Gtk.Snapshot ();
+            roulette.snapshot (snapshot);
+
+            Gsk.RenderNode node = snapshot.free_to_node ();
+            try {
+                var file_dialog = new Gtk.FileDialog ();
+                File save_file = yield file_dialog.save (this, null);
+                node.write_to_file (save_file.get_path ());
+            }
+            catch (Error e) {
+                critical (e.message);
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
             rotation = value;
             this.queue_draw ();
         });
-        var animation = new Adw.TimedAnimation (this, 0, 1, 400, callback_target);
+        var animation = new Adw.TimedAnimation (this, 0, 360, 1000, callback_target);
         animation.play ();
         animation.done.connect (() => {
             rotation = 0;
@@ -46,25 +46,35 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
     public override void snapshot (Gtk.Snapshot snapshot) {
         debug ("Taking Snapshot...");
         var rect = Graphene.Rect () {
-            origin = {0, 0},
-            size = { get_height(), get_height () }
-        };
-        var second_rect = Graphene.Rect () {
-            origin = { get_height() / 3, get_height () / 3},
-            size = { get_height () / 3, get_height () / 3 }
+            origin = { get_height () / 3, get_height () / 3 },
+            size = { get_height () / 6, get_height () / 6 }
         };
 
-        snapshot.append_color ({0, 1, 0, 1}, rect);
-        snapshot.append_color ( {1, (float) rotation, 0, 1}, second_rect);
+        var rotated_snap = new Gtk.Snapshot ();
 
-        var snap = new Gtk.Snapshot ();
-        var third_rect = Graphene.Rect () {
-            origin = { 0, 0 },
-            size = { get_height () / 4, get_height () / 4 }
+        var color = Gdk.RGBA () {
+            red = 1, green = 0, blue = 0, alpha = 1
         };
-        snap.append_color ({0, 0, 1, 1}, third_rect);
+        rotated_snap.append_color (color, rect);
 
-        snapshot.append_node (snap.free_to_node ());
+        var node = rotated_snap.free_to_node ();
+
+        var transform = new Gsk.Transform ();
+        transform = transform.rotate ((float) rotation);
+        var transformed_node = new Gsk.TransformNode (node, transform);
+
+        snapshot.append_node (transformed_node);
+    }
+
+    private Graphene.Matrix compute_rotation_matrix (double angle_degrees) {
+        double radians = angle_degrees * Math.PI * 1/180;
+        var matrix = Graphene.Matrix ();
+        matrix = matrix.init_from_2d (
+            Math.cos (radians), -Math.sin (radians),
+            Math.sin (radians), Math.cos (radians),
+            0, 0
+        );
+        return matrix;
     }
 
     public override Gtk.SizeRequestMode get_request_mode () {

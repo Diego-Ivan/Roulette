@@ -22,6 +22,12 @@
                 <signal name="clicked" handler="on_animation_button_clicked"/>
               </object>
             </child>
+            <child type="end">
+              <object class="GtkButton">
+                <property name="label">Save Node</property>
+                <signal name="clicked" handler="on_save_node_button_clicked"/>
+              </object>
+            </child>
           </object>
         </child>
 
