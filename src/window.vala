@@ -28,6 +28,15 @@ namespace Roulette {
             Object (application: app);
         }
 
+        construct {
+            var model = new ListStore (typeof (RouletteItem));
+            for (int i = 0; i < 4; i++) {
+                model.append (new RouletteItem ());
+            }
+
+            roulette.model = model;
+        }
+
         [GtkCallback]
         private void on_animation_button_clicked () {
             roulette.run_animation ();

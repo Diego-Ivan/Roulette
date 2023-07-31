@@ -7,6 +7,7 @@
 
 public sealed class ArcNode : ValidableNode {
     private Gsk.CairoNode cairo_node;
+    private Gsk.TransformNode transform_node;
 
     private Gdk.RGBA _color;
     public Gdk.RGBA color {
@@ -14,10 +15,8 @@ public sealed class ArcNode : ValidableNode {
             return _color;
         }
         set {
-            if (_color.equal (value)) {
-                return;
-            }
             _color = value;
+            debug (@"Coloring with: $color");
             valid = false;
         }
     }
@@ -39,7 +38,7 @@ public sealed class ArcNode : ValidableNode {
 
     public override Gsk.RenderNode render () {
         if (valid) {
-            return cairo_node;
+            return transform_node;
         }
 
         debug ("Node out of date! Rebuilding");
@@ -48,8 +47,8 @@ public sealed class ArcNode : ValidableNode {
         Cairo.Context ctx = cairo_node.get_draw_context ();
 
         Graphene.Size size = bounds.size;
-        double x = bounds.origin.x;
-        double y = bounds.origin.y;
+        double x = size.width * 0.5;
+        double y = size.width * 0.5;
         double radius = size.width * 0.5;
 
         double angle = angle_degrees * Math.PI / 180;
@@ -62,6 +61,12 @@ public sealed class ArcNode : ValidableNode {
         ctx.fill ();
         ctx.stroke ();
 
-        return cairo_node;
+        var transform = new Gsk.Transform ();
+        transform = transform.translate ({-(float) x, -(float) y});
+        transform_node = new Gsk.TransformNode (cairo_node, transform);
+
+        valid = true;
+
+        return transform_node;
     }
 }

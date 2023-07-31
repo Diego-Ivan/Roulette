@@ -5,6 +5,7 @@ roulette_sources = [
   'Roulette.vala',
   'ValidableNode.vala',
   'ArcNode.vala',
+  'RouletteItem.vala',
 ]
 
 cc = meson.get_compiler('c')
