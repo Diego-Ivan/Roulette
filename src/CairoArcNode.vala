@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public sealed class ArcNode : ValidatableNode {
+public sealed class CairoArcNode : ValidatableNode {
     private Gsk.CairoNode cairo_node;
     private Gsk.TransformNode transform_node;
 
@@ -34,7 +34,7 @@ public sealed class ArcNode : ValidatableNode {
         }
     }
 
-    public ArcNode (double angle_degrees) {
+    public CairoArcNode (double angle_degrees) {
         this.angle_degrees = angle_degrees;
     }
 

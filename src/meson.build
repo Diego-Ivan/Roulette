@@ -4,7 +4,7 @@ roulette_sources = [
   'window.vala',
   'Roulette.vala',
   'ValidatableNode.vala',
-  'ArcNode.vala',
+  'CairoArcNode.vala',
   'RouletteItem.vala',
 ]
 
