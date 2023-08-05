@@ -36,10 +36,10 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
             uint n_nodes = model.get_n_items ();
 
             // space_arcs = 0.1f * (360 / n_nodes);
-            double node_angle = 360 / n_nodes;
+            float node_angle = 360 / n_nodes;
 
             for (int i = 0; i < model.get_n_items (); i++) {
-                var node = new ArcNode (node_angle) {
+                var node = new CairoArcNode (node_angle) {
                     bounds = min_bounds,
                 };
                 float red = (float) Random.double_range (0, 1);
@@ -75,14 +75,14 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
     private void on_model_changed (uint position, uint removed, uint added) {
         debug ("Model has been changed");
         uint n_nodes = cached_arcs.length - removed + added;
-        double node_angle = 360 / n_nodes;
+        float node_angle = 360 / n_nodes;
 
         for (int i = 0; i < removed; i++) {
             cached_arcs.remove_index (position);
         }
 
         for (int i = 0; i < added; i++) {
-            var new_node = new ArcNode (node_angle) {
+            var new_node = new CairoArcNode (node_angle) {
                 bounds = min_bounds
             };
             cached_arcs.insert ((int) position, new_node);
@@ -122,10 +122,10 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
             y = (float) size * 0.5f
         };
 
-        double node_angle = cached_arcs[0].angle_degrees;
+        float node_angle = cached_arcs[0].angle_degrees;
 
         for (int i = 0; i < cached_arcs.length; i++) {
-            float offset = i * ((float) node_angle);
+            float offset = i * node_angle;
             ArcNode arc_node = cached_arcs[i];
             arc_node.bounds = Graphene.Rect () {
                 origin = { 0, 0 },
