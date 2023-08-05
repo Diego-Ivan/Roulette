@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public sealed class ArcNode : ValidableNode {
+public sealed class ArcNode : ValidatableNode {
     private Gsk.CairoNode cairo_node;
     private Gsk.TransformNode transform_node;
 

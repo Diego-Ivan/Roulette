@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public abstract class ValidableNode {
+public abstract class ValidatableNode {
     public bool valid { get; protected set; default = false; }
     protected Graphene.Rect _bounds;
     public Graphene.Rect bounds {
