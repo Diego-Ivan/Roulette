@@ -122,14 +122,13 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
             y = (float) size * 0.5f
         };
 
-        float scale_factor = 0.95f * (float) size / MIN_SIZE;
         double node_angle = cached_arcs[0].angle_degrees;
 
         for (int i = 0; i < cached_arcs.length; i++) {
             float offset = i * ((float) node_angle);
             ArcNode arc_node = cached_arcs[i];
             arc_node.bounds = Graphene.Rect () {
-                origin = { 0, 0},
+                origin = { 0, 0 },
                 size = { (float) size * 0.95f, (float) size * 0.95f }
             };
 

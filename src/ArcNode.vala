@@ -9,6 +9,8 @@ public sealed class ArcNode : ValidableNode {
     private Gsk.CairoNode cairo_node;
     private Gsk.TransformNode transform_node;
 
+    private Cairo.Antialias antialias = GRAY;
+
     private Gdk.RGBA _color;
     public Gdk.RGBA color {
         get {
@@ -53,6 +55,7 @@ public sealed class ArcNode : ValidableNode {
 
         double angle = angle_degrees * Math.PI / 180;
 
+        ctx.set_antialias (antialias);
         ctx.set_line_width (1);
         ctx.set_source_rgba (color.red, color.green, color.blue, color.alpha);
         ctx.line_to (x, y);
