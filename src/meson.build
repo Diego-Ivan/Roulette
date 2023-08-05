@@ -3,11 +3,17 @@ roulette_sources = [
   'application.vala',
   'window.vala',
   'Roulette.vala',
-  'ValidatableNode.vala',
-  'CairoArcNode.vala',
-  'GLArcNode.vala',
-  'ArcNode.vala',
-  'RouletteItem.vala',
+
+  # Color
+
+  # Models
+  'Models/RouletteItem.vala',
+
+  # Render Nodes
+  'Render/ValidatableNode.vala',
+  'Render/CairoArcNode.vala',
+  'Render/GLArcNode.vala',
+  'Render/ArcNode.vala',
 ]
 
 cc = meson.get_compiler('c')
