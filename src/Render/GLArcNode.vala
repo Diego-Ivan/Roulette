@@ -6,9 +6,9 @@
  */
 
 public class GLArcNode : ValidatableNode, ArcNode {
-    private Gsk.Renderer renderer;
-    private Gsk.GLShader shader;
-    private string shader_resource;
+    public static Gsk.GLShader shader;
+    private Bytes shader_args;
+    private Gsk.GLShaderNode shader_node;
 
     private Gdk.RGBA _color;
     public Gdk.RGBA color {
@@ -32,15 +32,24 @@ public class GLArcNode : ValidatableNode, ArcNode {
         }
     }
 
-    public GLArcNode (float angle, Gsk.Renderer renderer, string resource_path) {
+    public GLArcNode (float angle) {
         this.angle_degrees = angle;
-        this.renderer = renderer;
-        this.shader_resource = resource_path;
 
-        shader = new Gsk.GLShader.from_resource (shader_resource);
+        var args_builder = new Gsk.ShaderArgsBuilder (shader, null);
+        var color_vector = Graphene.Vec4 ().init (
+            color.red, color.green, color.blue, color.alpha
+        );
+
+        args_builder.set_vec4 (0, color_vector);
+        shader_args = args_builder.to_args ();
     }
 
     public override Gsk.RenderNode render () {
-        assert_not_reached ();
+        if (valid) {
+            return shader_node;
+        }
+
+        shader_node = new Gsk.GLShaderNode (shader, bounds, shader_args, null);
+        return shader_node;
     }
 }

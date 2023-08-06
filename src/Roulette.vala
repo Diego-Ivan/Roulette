@@ -148,5 +148,21 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
     public override Gtk.SizeRequestMode get_request_mode () {
         return size_request_mode;
     }
+
+    public override void realize () {
+        debug ("The roulette has been realized. Compiling GL Shader");
+        var shader = new Gsk.GLShader.from_resource ("/io/github/diegoivan/roulette/glsl/arc.glsl");
+
+        try {
+            unowned Gsk.Renderer renderer = root.get_renderer ();
+            shader.compile (renderer);
+
+            GLArcNode.shader = shader;
+        } catch (Error e) {
+            critical ("Failed to compile shader: %s. Defaulting to Cairo...", e.message);
+        }
+
+        base.realize ();
+    }
 }
 
