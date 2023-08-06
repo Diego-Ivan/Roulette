@@ -5,6 +5,8 @@ roulette_sources = [
   'Roulette.vala',
 
   # Color
+  'Color/ColorProvider.vala',
+  'Color/ResourceColorProvider.vala',
 
   # Models
   'Models/RouletteItem.vala',
