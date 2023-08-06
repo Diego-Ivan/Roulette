@@ -75,7 +75,9 @@ public class ResourceColorProvider : ColorProvider, Object {
         }
     }
 
-    public new Gdk.RGBA @get (int index) {
+    public new Gdk.RGBA @get (int index)
+        requires (index < color_array.length)
+    {
         return color_array[index];
     }
 

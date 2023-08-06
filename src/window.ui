@@ -37,6 +37,11 @@
             <child>
               <object class="RouletteSpinningRoulette" id="roulette">
                 <property name="halign">center</property>
+                <property name="color-provider">
+                  <object class="ResourceColorProvider">
+                    <property name="resource-path">/io/github/diegoivan/roulette/Color/hig-colors.txt</property>
+                  </object>
+                </property>
               </object>
             </child>
           </object>

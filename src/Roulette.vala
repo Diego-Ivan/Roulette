@@ -13,8 +13,14 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
         size = { MIN_SIZE, MIN_SIZE }
     };
 
+    public ColorProvider color_provider { get; set; }
+
     class construct {
         set_css_name ("roulette");
+    }
+
+    static construct {
+        typeof (ResourceColorProvider).ensure ();
     }
 
     private ListModel _model;
@@ -35,18 +41,18 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
 
             uint n_nodes = model.get_n_items ();
 
-            // space_arcs = 0.1f * (360 / n_nodes);
             float node_angle = 360 / n_nodes;
 
-            for (int i = 0; i < model.get_n_items (); i++) {
+            for (int i = 0; i < n_nodes; i++) {
                 var node = new CairoArcNode (node_angle) {
                     bounds = min_bounds,
                 };
-                float red = (float) Random.double_range (0, 1);
-                float green = (float) Random.double_range (0, 1);
-                float blue = (float) Random.double_range (0, 1);
 
-                node.color = { red, green, blue, 1 };
+                // Normalize node index to color_provider indexes
+                int @base = color_provider.n_items * (int) Math.floor (i/color_provider.n_items);
+                int color_index = i - @base;
+
+                node.color = color_provider[color_index];
                 cached_arcs.add (node);
             }
 
@@ -54,7 +60,6 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
         }
     }
 
-    private float space_arcs = 0;
     private GenericArray<ArcNode> cached_arcs = new GenericArray<ArcNode> ();
     double rotation = 0;
 
@@ -88,13 +93,12 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
             cached_arcs.insert ((int) position, new_node);
         }
 
-        foreach (ArcNode arc_node in cached_arcs) {
-            arc_node.angle_degrees = node_angle;
-            float red = (float) Random.double_range (0, 1);
-            float green = (float) Random.double_range (0, 1);
-            float blue = (float) Random.double_range (0, 1);
+        int n_arcs = cached_arcs.length;
+        for (int i = 0; i < n_arcs; i++) {
+            int @base = color_provider.n_items * (int) Math.floor (i/color_provider.n_items);
+            int color_index = i - @base;
 
-            arc_node.color = { 1, 0, 0, 1 };
+            cached_arcs[i].color = color_provider[color_index];
         }
     }
 
@@ -134,7 +138,6 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
 
             var transform = new Gsk.Transform ();
             transform = transform.translate (midpoint);
-            // transform = transform.scale (scale_factor, scale_factor);
             transform = transform.rotate ((float) rotation + offset);
 
             var transform_node = new Gsk.TransformNode (arc_node.render (), transform);
