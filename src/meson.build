@@ -4,6 +4,9 @@ roulette_sources = [
   'window.vala',
   'Roulette.vala',
 
+  # Factories
+  'Factories/ArcNodeFactory.vala',
+
   # Color
   'Color/ColorProvider.vala',
   'Color/ResourceColorProvider.vala',

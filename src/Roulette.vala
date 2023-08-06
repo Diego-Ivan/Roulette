@@ -14,6 +14,7 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
     };
 
     public ColorProvider color_provider { get; set; }
+    private ArcNodeFactory arc_factory;
 
     class construct {
         set_css_name ("roulette");
@@ -38,23 +39,6 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
 
             _model = value;
             _model.items_changed.connect (on_model_changed);
-
-            uint n_nodes = model.get_n_items ();
-
-            float node_angle = 360 / n_nodes;
-
-            for (int i = 0; i < n_nodes; i++) {
-                var node = new CairoArcNode (node_angle) {
-                    bounds = min_bounds,
-                };
-
-                // Normalize node index to color_provider indexes
-                int @base = color_provider.n_items * (int) Math.floor (i/color_provider.n_items);
-                int color_index = i - @base;
-
-                node.color = color_provider[color_index];
-                cached_arcs.add (node);
-            }
 
             queue_draw ();
         }
@@ -153,16 +137,25 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
         debug ("The roulette has been realized. Compiling GL Shader");
         var shader = new Gsk.GLShader.from_resource ("/io/github/diegoivan/roulette/glsl/arc.glsl");
 
-        try {
-            unowned Gsk.Renderer renderer = root.get_renderer ();
-            shader.compile (renderer);
+        arc_factory = new ArcNodeFactory (root.get_renderer ()) {
+            gl_shader = shader,
+            backend = CAIRO
+        };
 
-            GLArcNode.shader = shader;
-        } catch (Error e) {
-            critical ("Failed to compile shader: %s. Defaulting to Cairo...", e.message);
+        cached_arcs = new GenericArray<ArcNode> ();
+        arc_factory.angle_degrees = 360 / model.get_n_items ();
+
+        // Fill the array of cached nodes with the desired type of Node:
+        for (int i = 0; i < model.get_n_items (); i++) {
+            var node = arc_factory.create_node ();
+
+            int @base = color_provider.n_items * (int) Math.floor (i/color_provider.n_items);
+            int color_index = i - @base;
+
+            node.color = color_provider[color_index];
+            cached_arcs.add (node);
         }
 
         base.realize ();
     }
 }
-
