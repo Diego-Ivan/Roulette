@@ -94,12 +94,10 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
         out int min_baseline,
         out int natural_baseline
     ) {
-        debug (@"Measuring for $orientation");
         min = MIN_SIZE;
         natural = for_size < MIN_SIZE ? MIN_SIZE : for_size;
 
         min_baseline = natural_baseline = -1;
-        debug (@"min: $min, natural: $natural");
     }
 
     public override void snapshot (Gtk.Snapshot snapshot) {
@@ -139,7 +137,7 @@ public class Roulette.SpinningRoulette : Gtk.Widget {
 
         arc_factory = new ArcNodeFactory (root.get_renderer ()) {
             gl_shader = shader,
-            backend = CAIRO
+            // backend = CAIRO
         };
 
         cached_arcs = new GenericArray<ArcNode> ();

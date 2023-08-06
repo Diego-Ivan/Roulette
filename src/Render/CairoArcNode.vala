@@ -9,7 +9,7 @@ public sealed class CairoArcNode : ValidatableNode, ArcNode {
     private Gsk.CairoNode cairo_node;
     private Gsk.TransformNode transform_node;
 
-    private Cairo.Antialias antialias = GRAY;
+    private Cairo.Antialias antialias = FAST;
 
     private Gdk.RGBA _color;
     public Gdk.RGBA color {
@@ -18,7 +18,6 @@ public sealed class CairoArcNode : ValidatableNode, ArcNode {
         }
         set {
             _color = value;
-            debug (@"Coloring with: $color");
             valid = false;
         }
     }
@@ -43,8 +42,6 @@ public sealed class CairoArcNode : ValidatableNode, ArcNode {
             return transform_node;
         }
 
-        debug ("Node out of date! Rebuilding");
-
         cairo_node = new Gsk.CairoNode (bounds);
         Cairo.Context ctx = cairo_node.get_draw_context ();
 
@@ -56,7 +53,7 @@ public sealed class CairoArcNode : ValidatableNode, ArcNode {
         double angle = angle_degrees * Math.PI / 180;
 
         ctx.set_antialias (antialias);
-        ctx.set_line_width (1);
+        ctx.set_line_width (10);
         ctx.set_source_rgba (color.red, color.green, color.blue, color.alpha);
         ctx.line_to (x, y);
         ctx.arc (x, y, radius, 0, angle);
