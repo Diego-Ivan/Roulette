@@ -27,6 +27,7 @@ public class GLArcNode : ValidatableNode, ArcNode {
         }
         set {
             _color = value;
+            rebuild_args ();
             valid = false;
         }
     }
@@ -38,6 +39,7 @@ public class GLArcNode : ValidatableNode, ArcNode {
         }
         set {
             _angle_degrees = value;
+            rebuild_args ();
             valid = false;
         }
     }
@@ -45,13 +47,16 @@ public class GLArcNode : ValidatableNode, ArcNode {
     public GLArcNode (float angle, Gsk.GLShader shader) {
         this.shader = shader;
         this.angle_degrees = angle;
+    }
 
+    private void rebuild_args () {
         var args_builder = new Gsk.ShaderArgsBuilder (shader, null);
         var color_vector = Graphene.Vec4 ().init (
             color.red, color.green, color.blue, color.alpha
         );
 
         args_builder.set_vec4 (0, color_vector);
+        args_builder.set_float (1, angle_degrees);
         shader_args = args_builder.to_args ();
     }
 
@@ -59,8 +64,10 @@ public class GLArcNode : ValidatableNode, ArcNode {
         if (valid) {
             return shader_node;
         }
+        debug ("Node's no longer valid. Rebuilding");
 
         shader_node = new Gsk.GLShaderNode (shader, bounds, shader_args, null);
+        valid = true;
         return shader_node;
     }
 }
